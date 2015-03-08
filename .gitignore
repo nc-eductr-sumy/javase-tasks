@@ -1,0 +1,6 @@
+.*
+*.iml
+target
+src/main
+!.gitignore
+src/test/java
