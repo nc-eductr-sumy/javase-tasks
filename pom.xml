@@ -69,8 +69,20 @@
                                 <copy todir="${basedir}/src/test/java">
                                     <fileset dir="${basedir}/src/test/common"/>
                                     <fileset dir="${basedir}/src/test/"
-                                            includes="*${project.version}*/**"/>
+                                             includes="*${project.version}*/**"/>
                                 </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>clean-tests</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete dir="${basedir}/src/test/java"/>
                             </target>
                         </configuration>
                     </execution>
