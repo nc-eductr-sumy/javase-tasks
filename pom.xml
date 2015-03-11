@@ -10,12 +10,15 @@
 
     <!-- Use corresponding version:
         1.0 - Task
-        1.1 - Task with nextTimeAfter
+        1.1 - Task constructors, getters and setters
+        1.1 - Task nextTimeAfter
      -->
     <version>1.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <test-repo>${basedir}/src/test-repo</test-repo>
+        <tests>${basedir}/src/test/java</tests>
     </properties>
 
     <dependencies>
@@ -53,7 +56,6 @@
                         <configuration>
                             <target>
                                 <mkdir dir="${basedir}/src/main/java/com/netcracker/eductr/j2se/tasks"/>
-                                <mkdir dir="${basedir}/src/test"/>
                             </target>
                         </configuration>
                     </execution>
@@ -65,10 +67,10 @@
                         </goals>
                         <configuration>
                             <target>
-                                <delete dir="${basedir}/src/test/java"/>
-                                <copy todir="${basedir}/src/test/java">
-                                    <fileset dir="${basedir}/src/test/common"/>
-                                    <fileset dir="${basedir}/src/test/"
+                                <delete dir="${tests}"/>
+                                <copy todir="${tests}">
+                                    <fileset dir="${test-repo}/src/test/common"/>
+                                    <fileset dir="${test-repo}/src/test/"
                                              includes="*${project.version}*/**"/>
                                 </copy>
                             </target>
@@ -82,31 +84,9 @@
                         </goals>
                         <configuration>
                             <target>
-                                <delete dir="${basedir}/src/test/java"/>
+                                <delete dir="${tests}"/>
+                                <delete dir="${test-repo}"/>
                             </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/src/test/java</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/src/test/common</directory>
-                                </resource>
-                                <resource>
-                                    <directory>${basedir}/src/test/*${project.version}*</directory>
-                                </resource>
-                            </resources>
                         </configuration>
                     </execution>
                 </executions>
@@ -125,6 +105,33 @@
                         </property>
                     </properties>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.9.2</version>
+                <executions>
+                    <execution>
+                        <id>checkout-tests</id>
+                        <goals><goal>checkout</goal></goals>
+                        <phase>generate-test-sources</phase>
+                        <configuration>
+                            <connectionUrl>scm:git:https://github.com/nc-eductr-sumy/javase-tasks.git</connectionUrl>
+                            <checkoutDirectory>${test-repo}</checkoutDirectory>
+                            <includes>src/test/**</includes>
+                            <providerImplementations>
+                                <git>jgit</git>
+                            </providerImplementations>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-jgit</artifactId>
+                        <version>1.9.2</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
