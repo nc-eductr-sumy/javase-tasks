@@ -11,14 +11,22 @@
     <!-- Use corresponding version:
         1.0 - Task
         1.1 - Task constructors, getters and setters
-        1.1 - Task nextTimeAfter
+        1.2 - Task nextTimeAfter
+        2.1 - TaskList
      -->
-    <version>1.0</version>
+    <version>2.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <test-repo>${basedir}/src/test-repo</test-repo>
         <tests>${basedir}/src/test/java</tests>
+        <java>1.6</java>
+        <tests-v1.0>t1_0</tests-v1.0>
+        <tests-v1.1>t1_0,t1_1</tests-v1.1>
+        <tests-v1.2>t1_0,t1_1,t1_2</tests-v1.2>
+        <tests-v2.0>t1_0,t1_1,t1_2,t2_0</tests-v2.0>
+        <tests-v2.1>t1_0,t1_1,t1_2,t2_0,t2_1</tests-v2.1>
+        <tests-v2.2>t1_0,t1_1,t1_2,t2_0,t2_1,t2_2</tests-v2.2>
     </properties>
 
     <dependencies>
@@ -31,15 +39,16 @@
     </dependencies>
 
     <build>
-        <defaultGoal>clean test</defaultGoal>
+        <defaultGoal>test</defaultGoal>
         <plugins>
+            <!-- Java Version -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>${java}</source>
+                    <target>${java}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -47,6 +56,7 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.7</version>
                 <executions>
+                    <!-- Generate folders on init -->
                     <execution>
                         <id>generate-folders</id>
                         <phase>initialize</phase>
@@ -59,6 +69,7 @@
                             </target>
                         </configuration>
                     </execution>
+                    <!-- Copy tests for given version -->
                     <execution>
                         <id>select-tests-version</id>
                         <phase>process-test-sources</phase>
@@ -68,14 +79,21 @@
                         <configuration>
                             <target>
                                 <delete dir="${tests}"/>
+                                <delete dir="${project.build.testOutputDirectory}"/>
+                                <script language="javascript">
+                                    var version = project.getProperty("project.version");
+                                    var tests = project.getProperty("tests-v"+ version);
+                                    var pattern = tests.replaceAll("(\\w+)","**/$1/**");
+                                    project.setNewProperty("tests-pattern", pattern);
+                                </script>
                                 <copy todir="${tests}">
-                                    <fileset dir="${test-repo}/src/test/common"/>
-                                    <fileset dir="${test-repo}/src/test/"
-                                             includes="*${project.version}*/**"/>
+                                    <fileset dir="${tests-source}/common"/>
+                                    <fileset dir="${tests-source}/versioned" includes="${tests-pattern}"/>
                                 </copy>
                             </target>
                         </configuration>
                     </execution>
+                    <!-- Clean tests -->
                     <execution>
                         <id>clean-tests</id>
                         <phase>clean</phase>
@@ -91,6 +109,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Test results formatter -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -106,33 +125,54 @@
                     </properties>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-scm-plugin</artifactId>
-                <version>1.9.2</version>
-                <executions>
-                    <execution>
-                        <id>checkout-tests</id>
-                        <goals><goal>checkout</goal></goals>
-                        <phase>generate-test-sources</phase>
-                        <configuration>
-                            <connectionUrl>scm:git:https://github.com/nc-eductr-sumy/javase-tasks.git</connectionUrl>
-                            <checkoutDirectory>${test-repo}</checkoutDirectory>
-                            <includes>src/test/**</includes>
-                            <providerImplementations>
-                                <git>jgit</git>
-                            </providerImplementations>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-jgit</artifactId>
-                        <version>1.9.2</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <tests-source>${test-repo}/src/test</tests-source>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-plugin</artifactId>
+                        <version>1.9.2</version>
+                        <executions>
+                            <execution>
+                                <id>checkout-tests</id>
+                                <goals><goal>checkout</goal></goals>
+                                <phase>generate-test-sources</phase>
+                                <configuration>
+                                    <connectionUrl>scm:git:https://github.com/nc-eductr-sumy/javase-tasks.git</connectionUrl>
+                                    <checkoutDirectory>${test-repo}</checkoutDirectory>
+                                    <includes>src/test/**</includes>
+                                    <providerImplementations>
+                                        <git>jgit</git>
+                                    </providerImplementations>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.scm</groupId>
+                                <artifactId>maven-scm-provider-jgit</artifactId>
+                                <version>1.9.2</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <tests-source>${basedir}/src/test</tests-source>
+            </properties>
+        </profile>
+    </profiles>
 </project>
