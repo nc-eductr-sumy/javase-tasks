@@ -11,7 +11,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeThat;
 import static org.junit.Assume.assumeTrue;
 
-public class TaskEqualsTest extends TaskListTestsBase
+public class TaskEqualsTest
 {
     @Test
     public void taskWithEqualPropertiesShouldBeEqual() {

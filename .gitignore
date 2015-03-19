@@ -4,4 +4,4 @@ target
 src/main
 !.gitignore
 src/test/java
-src/test-repo
+src/test-*

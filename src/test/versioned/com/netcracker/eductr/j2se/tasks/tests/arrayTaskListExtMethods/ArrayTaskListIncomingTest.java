@@ -31,6 +31,12 @@ public class ArrayTaskListIncomingTest {
     }
 
     @Test
+    public void testEmptyIncoming() {
+        assertThat( listOf().incoming(1, 100).size(), is( 0 ));
+        assertThat( listOf( task(10) ).incoming(100, 200).size(), is( 0 ));
+    }
+
+    @Test
     public void testTaskListIncomingMethod() {
         // range: (50 60]
         Task
