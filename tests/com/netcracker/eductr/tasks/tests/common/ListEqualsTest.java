@@ -17,8 +17,8 @@ public abstract class ListEqualsTest extends EqualsTest<TaskList>
         isOld = ! repo.constructorExists("Task", String.class, Date.class);
         Task = repo.createTypeProxy("Task", Task.Constructor.class);
         TaskList = repo.createTypeProxy(getImplementation(), TaskList.Constructor.class);
-        boolean equalsInAbstract = repo.classExists("TaskList") 
-            && repo.methodExists("TaskList", "equals", false, Object.class);
+        boolean equalsInAbstract = repo.classExists("_TaskList")
+            && repo.methodExists("_TaskList", "equals", false, Object.class);
         boolean equalsInImpl = repo.methodExists(getImplementation(), "equals", false, Object.class);
         if (! equalsInAbstract && ! equalsInImpl)
             throw new ObsoleteTestException();

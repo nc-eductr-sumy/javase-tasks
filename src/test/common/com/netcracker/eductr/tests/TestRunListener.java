@@ -45,7 +45,11 @@ public class TestRunListener extends RunListener {
                     e.getMessage());
             int line = -1;
             for (StackTraceElement frame : e.getStackTrace()) {
-                if (frame.getClassName().equals(descr.getTestClass().getName()) && frame.getMethodName().equals(descr.getMethodName())) {
+                String strippedName = descr.getMethodName();
+                if (strippedName.contains("[")) {
+                    strippedName = strippedName.substring(0, strippedName.indexOf('['));
+                }
+                if (frame.getClassName().equals(descr.getTestClass().getName()) && frame.getMethodName().equals(strippedName)) {
                     line = frame.getLineNumber();
                 }
                 else if (frame.getClassName().startsWith("com.netcracker.")) {

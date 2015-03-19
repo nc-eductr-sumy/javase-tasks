@@ -11,7 +11,7 @@ public abstract class IterableTest extends AbstractListTest
 	public IterableTest(ProxyRepository repo) 
             throws ClassNotFoundException, ObsoleteTestException {
         super(repo);
-        repo.obsoleteIfMethodNotExists("TaskList", "iterator");
+        repo.obsoleteIfMethodNotExists("_TaskList", "iterator");
         repo.registerWrapType(Iterator.class);
 	}
     

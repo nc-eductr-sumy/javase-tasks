@@ -1,4 +1,4 @@
-package com.netcracker.eductr.j2se.tasks.tests.t1_0;
+package com.netcracker.eductr.j2se.tasks.tests.task;
 
 import org.junit.Test;
 import static org.junit.Assert.*;

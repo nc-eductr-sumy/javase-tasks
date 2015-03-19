@@ -19,8 +19,8 @@ public abstract class AbstractListTest
         this.repo = repo;
         Task = repo.createTypeProxy("Task", Task.Constructor.class);
         TaskList = repo.createTypeProxy(getImplementation(), TaskList.Constructor.class);
-        if (repo.classExists("TaskList"))
-            repo.createTypeProxy("TaskList", TaskList.Constructor.class);
+        if (repo.classExists("_TaskList"))
+            repo.createTypeProxy("_TaskList", TaskList.Constructor.class);
         if (repo.classExists("ArrayTaskList"))
             repo.createTypeProxy("ArrayTaskList", TaskList.Constructor.class);
         if (repo.classExists("LinkedTaskList"))

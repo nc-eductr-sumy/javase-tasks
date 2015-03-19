@@ -21,7 +21,7 @@ public class T6_TaskIOTest
         TaskIO = repo.createTypeProxy("TaskIO", TaskIO.class);
         Task = repo.createTypeProxy("Task", Task.Constructor.class);
         TaskList = repo.createTypeProxy("ArrayTaskList", TaskList.Constructor.class);
-        repo.registerUnwrapType(TaskList.class, "TaskList");
+        repo.registerUnwrapType(TaskList.class, "_TaskList");
 	}
 
     private TaskList createList() {

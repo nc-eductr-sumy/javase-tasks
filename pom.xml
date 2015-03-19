@@ -12,21 +12,29 @@
         1.0 - Task
         1.1 - Task constructors, getters and setters
         1.2 - Task nextTimeAfter
-        2.1 - TaskList
+        2.1 - ArrayTaskList
+        2.2 - ArrayTaskList incoming
+        3.1 - Exceptions
+        3.2 - LinkedTaskList
+        3.3 - TaskList superclass
      -->
-    <version>2.1</version>
+    <version>4.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <test-repo>${basedir}/src/test-repo</test-repo>
         <tests>${basedir}/src/test/java</tests>
-        <java>1.6</java>
-        <tests-v1.0>t1_0</tests-v1.0>
-        <tests-v1.1>t1_0,t1_1</tests-v1.1>
-        <tests-v1.2>t1_0,t1_1,t1_2</tests-v1.2>
-        <tests-v2.0>t1_0,t1_1,t1_2,t2_0</tests-v2.0>
-        <tests-v2.1>t1_0,t1_1,t1_2,t2_0,t2_1</tests-v2.1>
-        <tests-v2.2>t1_0,t1_1,t1_2,t2_0,t2_1,t2_2</tests-v2.2>
+        <java.version>1.6</java.version>
+        <features-v1.0>task</features-v1.0>
+        <features-v1.1>taskMethods</features-v1.1>
+        <features-v1.2>taskExtMethods</features-v1.2>
+        <features-v2.0>arrayTaskList</features-v2.0>
+        <features-v2.1>arrayTaskListMethods</features-v2.1>
+        <features-v2.2>arrayTaskListExtMethods</features-v2.2>
+        <features-v3.1>taskExceptions,arrayTaskListExceptions</features-v3.1>
+        <features-v3.2>taskList,~arrayTaskList,~arrayTaskListMethods,~arrayTaskListExtMethods,~arrayTaskListExceptions</features-v3.2>
+        <features-v4.1>iterators</features-v4.1>
+        <features-v4.2>utilMethods</features-v4.2>
     </properties>
 
     <dependencies>
@@ -47,8 +55,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5.1</version>
                 <configuration>
-                    <source>${java}</source>
-                    <target>${java}</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -82,8 +90,32 @@
                                 <delete dir="${project.build.testOutputDirectory}"/>
                                 <script language="javascript">
                                     var version = project.getProperty("project.version");
-                                    var tests = project.getProperty("tests-v"+ version);
-                                    var pattern = tests.replaceAll("(\\w+)","**/$1/**");
+                                    var features = new java.util.LinkedHashMap();
+                                    all:
+                                    for (var major = 1; major &lt; 100; major++) {
+                                        for (var minor = 0; minor &lt; 10; minor++) {
+                                            var current = major +"."+ minor;
+                                            var fs = project.getProperty("features-v"+ current);
+                                            if (! fs) continue;
+                                            fs = fs.split(',');
+                                            for (var i = 0; i &lt; fs.length; i++) {
+                                                if (fs[i].startsWith('~'))
+                                                    features.remove(fs[i].substring(1,fs[i].length()));
+                                                else
+                                                    features.put(fs[i], current);
+                                            }
+                                            if (current == version) {
+                                                break all;
+                                            }
+                                        }
+                                    }
+                                    println("Features: "+ features);
+                                    var pattern = '';
+                                    for (var keys = features.keySet().iterator(); keys.hasNext(); ) {
+                                        pattern += '**/'+ keys.next() +'/**';
+                                        if (keys.hasNext())
+                                            pattern += ',';
+                                    }
                                     project.setNewProperty("tests-pattern", pattern);
                                 </script>
                                 <copy todir="${tests}">

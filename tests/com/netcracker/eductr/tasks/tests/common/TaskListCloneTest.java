@@ -12,7 +12,7 @@ public abstract class TaskListCloneTest extends AbstractListTest {
         throws ClassNotFoundException, ObsoleteTestException 
     {
         super(repo);
-        boolean cloneInAbstract = repo.methodExists("TaskList", "clone", false);
+        boolean cloneInAbstract = repo.methodExists("_TaskList", "clone", false);
         boolean cloneInImpl = repo.methodExists(getImplementation(), "clone", false);
         if (! cloneInAbstract && ! cloneInImpl)
             throw new ObsoleteTestException();

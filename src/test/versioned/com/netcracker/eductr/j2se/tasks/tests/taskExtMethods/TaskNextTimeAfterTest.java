@@ -1,12 +1,18 @@
-package com.netcracker.eductr.j2se.tasks.tests.t1_2;
+package com.netcracker.eductr.j2se.tasks.tests.taskExtMethods;
 
 import com.netcracker.eductr.j2se.tasks.Task;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
+
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 import static org.hamcrest.CoreMatchers.*;
 
 public class TaskNextTimeAfterTest {
+
+    @Rule
+    public final Timeout TIMEOUT = new Timeout(1000);
 
     static final int NEVER = -1;
 

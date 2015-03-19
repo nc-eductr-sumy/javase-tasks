@@ -1,4 +1,4 @@
-package com.netcracker.eductr.j2se.tasks.tests.t1_1;
+package com.netcracker.eductr.j2se.tasks.tests.taskMethods;
 
 import com.netcracker.eductr.j2se.tasks.Task;
 import org.junit.Rule;
